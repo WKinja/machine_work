@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome | Health AI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('doctor.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .navbar h2 {
+      margin: 0;
+    }
+
+    .logout {
+      background-color: red;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      border: none;
+    }
+
+    .container {
+      margin-top: 120px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 30px;
+      border-radius: 12px;
+    }
+
+    .container h1 {
+      margin-bottom: 20px;
+    }
+
+    .role-section {
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      background: green;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: darkgreen;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h2>Health AI</h2>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+    <h1>Welcome to Your Dashboard</h1>
+    <p id="welcomeMsg">Loading role...</p>
+
+    <div class="role-section" id="roleOptions"></div>
+  </div>
+
+  <script>
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+
+    if (!token || !role) {
+      window.location.href = "/login";
+    }
+
+    const welcomeMsg = document.getElementById("welcomeMsg");
+    const roleOptions = document.getElementById("roleOptions");
+
+    welcomeMsg.textContent = `Logged in as: ${role.toUpperCase()}`;
+
+    if (role === "patient") {
+      roleOptions.innerHTML = `
+        <button class="btn" onclick="location.href='/diagnosis'">🩺 Disease Diagnosis</button>
+      `;
+    } else if (role === "doctor") {
+      roleOptions.innerHTML = `
+        <button class="btn" onclick="location.href='/doctor-dashboard'">📝 View Diagnoses & Add Comments</button>
+      `;
+    } else if (role === "admin") {
+      roleOptions.innerHTML = `
+        <button class="btn" onclick="location.href='/admin-dashboard'">👤 View All Users</button>
+      `;
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "/login";
+    }
+  </script>
+</body>
+</html>

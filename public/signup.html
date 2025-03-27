@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signup | Disease Prediction</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>📝 Sign Up</h2>
+    <form id="signup-form">
+      <input type="text" id="username" placeholder="Enter Username" required />
+      <input type="email" id="email" placeholder="Enter Email" required />
+      <input type="password" id="password" placeholder="Enter Password" required />
+
+      <select id="role" required>
+        <option value="" disabled selected>Select Your Role</option>
+        <option value="patient">Patient</option>
+        <option value="doctor">Doctor</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <button type="submit">Sign Up</button>
+    </form>
+    <p id="error-message" class="error"></p>
+    <p>Already have an account? <a href="/login">Login</a></p>
+  </div>
+
+  <script>
+    document.getElementById("signup-form").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+      const errorMessage = document.getElementById("error-message");
+
+      if (!role) {
+        errorMessage.textContent = "❌ Please select a role.";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password, role }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Store tokens
+          localStorage.setItem("token", data.token);
+          if (data.refreshToken) {
+            localStorage.setItem("refreshToken", data.refreshToken);
+          }
+
+          // Redirect based on role
+          const redirectPath = `/${data.role}/index.html`;
+          window.location.href = redirectPath;
+        } else {
+          errorMessage.textContent = "❌ " + data.message;
+        }
+      } catch (error) {
+        console.error("Signup error:", error);
+        errorMessage.textContent = "❌ Signup failed. Try again.";
+      }
+    });
+  </script>
+</body>
+</html>

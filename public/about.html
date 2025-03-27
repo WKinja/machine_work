@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Disease Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('doc.jpg'); /* Ensure the image is in the same directory */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            color: white;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+
+        .navbar .home {
+            background-color: green;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        /* About Us Section */
+        .container {
+            width: 75%; /* Set to 75% of the screen width */
+            max-width: 1000px; /* Set a max width for large screens */
+            margin: 100px auto 20px; /* Adjusted for navbar */
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.75); /* Semi-transparent background */
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3); /* Slight shadow for depth */
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        p {
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .contact {
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .email {
+            color: #00ffcc;
+            font-size: 18px;
+        }
+
+        .phone {
+            color: #ffcc00;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="./patient/index.html" class="home">🏠 Home</a>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+    </div>
+
+    <!-- About Us Section -->
+    <div class="container">
+        <h2>🔍 About Us</h2>
+        <p>
+            Welcome to our AI-Powered Disease Prediction Platform, designed to enhance early diagnosis 
+            and improve healthcare accessibility. Our platform uses advanced machine learning models 
+            to analyze symptoms and provide real-time predictions, helping users make informed decisions.
+        </p>
+        <p>
+            Our mission is to bridge the gap between patients and healthcare providers by offering a 
+            user-friendly system that supports early detection and medical consultations. 
+            We are committed to security, accuracy, and accessibility in healthcare.
+        </p>
+        <p class="contact">
+            📧 **Email:** <br>
+            <a class="email" href="mailto:support@diseasepredict.com">support@diseasepredict.com</a> <br><br>
+            📞 **Phone:** <br>
+            <a class="phone" href="tel:+0799282424">0799282424</a>
+        </p>
+    </div>
+
+</body>
+</html>

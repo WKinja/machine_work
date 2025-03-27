@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Doctor Dashboard</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9f9f9 url("doc-page.jpg") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .navbar .left {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .navbar .right {
+      display: flex;
+      gap: 15px;
+    }
+
+    .navbar button {
+      font-weight: bold;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .navbar button.view-btn {
+      background-color: #007bff;
+    }
+
+    .container {
+      width: 75%;
+      margin: 140px auto 40px;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #patients-container {
+      display: none;
+      width: 90%;
+      margin: 140px auto 40px;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .user-item {
+      text-align: left;
+      background: #fff;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-left: 5px solid #007bff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+
+    .tips {
+      background-color: #f3f3f3;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .tips h3 {
+      margin-top: 0;
+    }
+
+    .tips ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="left">🩺 Doctor Dashboard</div>
+    <div class="right">
+      <button class="view-btn" onclick="goHome()">🏠 Home</button>
+      <button class="view-btn" onclick="window.location.href='/doctor/index.html#diagnosis'">📄 View Diagnoses</button>
+      <button class="view-btn" onclick="fetchPatients()">👥 View All Patients</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Dashboard Welcome Content -->
+  <div class="container" id="dashboard">
+    <h1>👋 Welcome, Doctor</h1>
+    <p class="intro-text">
+      You can view all patient diagnoses submitted via the system, and provide important comments such as prescriptions, severity levels, or follow-up recommendations.
+    </p>
+
+    <div class="tips">
+      <h3>💡 Quick Actions You Can Perform:</h3>
+      <ul>
+        <li>Review submitted symptoms and ML-generated disease predictions</li>
+        <li>Send personalized medical feedback to patients</li>
+        <li>Log out securely after every session</li>
+        <li>Follow up based on diagnosis severity and patient profile</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Patient List -->
+  <div id="patients-container">
+    <h2>🩺 Patient Records</h2>
+    <div id="patients-list">Loading...</div>
+  </div>
+
+  <!-- JS Logic -->
+  <script>
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    function goHome() {
+      document.getElementById("dashboard").style.display = "flex";
+      document.getElementById("patients-container").style.display = "none";
+    }
+
+    async function fetchPatients() {
+      const token = localStorage.getItem("token");
+      const list = document.getElementById("patients-list");
+
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("patients-container").style.display = "block";
+      list.innerHTML = "🔄 Loading patient data...";
+
+      try {
+        const res = await fetch("/doctor/patients", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!res.ok) throw new Error("Failed to load patients");
+
+        const patients = await res.json();
+        list.innerHTML = "";
+
+        if (!patients.length) {
+          list.innerHTML = "<p>ℹ️ No patients found in the system.</p>";
+          return;
+        }
+
+        patients.forEach((patient) => {
+          const div = document.createElement("div");
+          div.className = "user-item";
+          div.innerHTML = `
+            <strong>${patient.username}</strong> (${patient.email})<br>
+            <span><strong>Role:</strong> ${patient.role}</span>
+          `;
+          list.appendChild(div);
+        });
+
+      } catch (err) {
+        console.error("❌ Error fetching patients:", err);
+        list.innerHTML = "❌ Could not load patient data.";
+      }
+    }
+  </script>
+
+</body>
+</html>

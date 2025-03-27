@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Disease Prediction</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>🔑 Login</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Enter Email" required />
+      <input type="password" id="password" placeholder="Enter Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p id="error-message" class="error"></p>
+    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+  </div>
+
+  <script>
+    document.getElementById("login-form").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("error-message");
+
+      try {
+        const response = await fetch("http://localhost:5000/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Store both tokens
+          localStorage.setItem("token", data.token); // Access token
+          if (data.refreshToken) {
+            localStorage.setItem("refreshToken", data.refreshToken); // Optional if refresh logic used
+          }
+
+          // Role-based redirect
+          const role = data.role;
+          const redirectPath = `/${role}/index.html`;
+
+          window.location.href = redirectPath;
+        } else {
+          errorMessage.textContent = "❌ " + data.message;
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        errorMessage.textContent = "❌ Login failed. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>

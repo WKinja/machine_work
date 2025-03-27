@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disease Diagnosis</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-image: url('doctor.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      color: white;
+      z-index: 1000;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      font-weight: bold;
+    }
+
+    .navbar .logout {
+      background-color: red;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 120px auto 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: darkgreen;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="about.html">About Us</a>
+    <a class="logout" onclick="logout()">Logout</a>
+  </div>
+
+  <div class="container">
+    <h2>🩺 Disease Diagnosis</h2>
+    <form id="diagnosis-form">
+      <label for="symptom1">Select Symptom 1:</label>
+      <select id="symptom1" required></select>
+
+      <label for="symptom2">Select Symptom 2:</label>
+      <select id="symptom2" required></select>
+
+      <label for="symptom3">Select Symptom 3:</label>
+      <select id="symptom3" required></select>
+
+      <label for="symptom4">Select Symptom 4:</label>
+      <select id="symptom4" required></select>
+
+      <label for="symptom5">Select Symptom 5:</label>
+      <select id="symptom5" required></select>
+
+      <button type="submit">Get Diagnosis</button>
+    </form>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    // ✅ Full symptoms list (restored)
+    const symptoms = [
+      "Itching", "Skin Rash", "Nodal Skin Eruptions", "Continuous Sneezing", "Shivering", "Chills",
+      "Joint Pain", "Stomach Pain", "Acidity", "Ulcers on Tongue", "Muscle Wasting", "Vomiting",
+      "Burning Micturition", "Spotting Urination", "Fatigue", "Weight Gain", "Anxiety",
+      "Cold Hands and Feet", "Mood Swings", "Weight Loss", "Restlessness", "Lethargy",
+      "Patches in Throat", "Irregular Sugar Level", "Cough", "High Fever", "Sunken Eyes",
+      "Breathlessness", "Sweating", "Dehydration", "Indigestion", "Headache", "Yellowish Skin",
+      "Dark Urine", "Nausea", "Loss of Appetite", "Pain Behind the Eyes", "Back Pain",
+      "Constipation", "Abdominal Pain", "Diarrhoea", "Mild Fever", "Yellow Urine",
+      "Yellowing of Eyes", "Acute Liver Failure", "Fluid Overload", "Swelling of Stomach",
+      "Swelled Lymph Nodes", "Malaise", "Blurred and Distorted Vision", "Phlegm",
+      "Throat Irritation", "Redness of Eyes", "Sinus Pressure", "Runny Nose", "Congestion",
+      "Chest Pain", "Weakness in Limbs", "Fast Heart Rate", "Pain During Bowel Movements",
+      "Pain in Anal Region", "Bloody Stool", "Irritation in Anus", "Neck Pain", "Dizziness",
+      "Cramps", "Bruising", "Obesity", "Swollen Legs", "Swollen Blood Vessels",
+      "Puffy Face and Eyes", "Enlarged Thyroid", "Brittle Nails", "Swollen Extremities",
+      "Excessive Hunger", "Drying and Tingling Lips", "Slurred Speech", "Knee Pain",
+      "Hip Joint Pain", "Muscle Weakness", "Stiff Neck", "Swelling Joints", "Movement Stiffness",
+      "Spinning Movements", "Loss of Balance", "Unsteadiness", "Weakness of One Body Side",
+      "Loss of Smell", "Bladder Discomfort", "Foul Smell of Urine", "Continuous Feel of Urine",
+      "Passage of Gases", "Internal Itching", "Toxic Look (Typhos)", "Depression",
+      "Irritability", "Muscle Pain", "Altered Sensorium", "Red Spots Over Body", "Belly Pain",
+      "Abnormal Menstruation", "Dischromic Patches", "Watering from Eyes", "Increased Appetite",
+      "Polyuria", "Family History", "Mucoid Sputum", "Rusty Sputum", "Lack of Concentration",
+      "Visual Disturbances", "Receiving Blood Transfusion", "Receiving Unsterile Injections",
+      "Coma", "Stomach Bleeding", "Distention of Abdomen", "History of Alcohol Consumption",
+      "Blood in Sputum", "Prominent Veins on Calf", "Palpitations", "Painful Walking",
+      "Pus Filled Pimples", "Blackheads", "Scurring", "Skin Peeling", "Silver Like Dusting",
+      "Small Dents in Nails", "Inflammatory Nails", "Blister", "Red Sore Around Nose",
+      "Yellow Crust Ooze"
+    ];
+
+    function populateDropdown(id) {
+      const dropdown = document.getElementById(id);
+      symptoms.forEach(symptom => {
+        const option = document.createElement("option");
+        option.value = symptom;
+        option.textContent = symptom;
+        dropdown.appendChild(option);
+      });
+    }
+
+    ["symptom1", "symptom2", "symptom3", "symptom4", "symptom5"].forEach(populateDropdown);
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    document.getElementById("diagnosis-form").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const selectedSymptoms = [
+        document.getElementById("symptom1").value,
+        document.getElementById("symptom2").value,
+        document.getElementById("symptom3").value,
+        document.getElementById("symptom4").value,
+        document.getElementById("symptom5").value
+      ];
+
+      try {
+        const response = await fetch("http://localhost:5000/diagnose", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
+          body: JSON.stringify({ symptoms: selectedSymptoms })
+        });
+
+        const data = await response.json();
+
+        const resultElem = document.getElementById("result");
+        if (response.ok) {
+          resultElem.textContent = `🧾 Diagnosis: ${data.diagnosis}`;
+        } else {
+          resultElem.textContent = `❌ Error: ${data.message}`;
+        }
+      } catch (error) {
+        document.getElementById("result").textContent = "❌ Network error. Please try again.";
+        console.error("Diagnosis error:", error);
+      }
+    });
+  </script>
+</body>
+</html>
